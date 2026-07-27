@@ -8,8 +8,17 @@ function initAudio() {
   if (audioCtx.state === 'suspended') audioCtx.resume();
 }
 
+// 确保 AudioContext 就绪（同步创建 + resume）
+function ensureAudioReady() {
+  if (!audioCtx) audioCtx = new AudioCtx();
+  if (audioCtx.state === 'suspended') {
+    audioCtx.resume();
+  }
+  return audioCtx.state !== 'suspended';
+}
+
 function playSound(type) {
-  if (!audioCtx) return;
+  if (!ensureAudioReady()) return;
   const osc = audioCtx.createOscillator();
   const gain = audioCtx.createGain();
   osc.connect(gain); gain.connect(audioCtx.destination);
