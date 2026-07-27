@@ -4,11 +4,22 @@
 function setupInput() {
   // ===== 测试音效按钮 =====
   document.getElementById('test-sound-btn').addEventListener('click', () => {
-    playSound('coin');
-    const btn = document.getElementById('test-sound-btn');
-    const orig = btn.textContent;
-    btn.textContent = '🔊 听到了吗？';
-    setTimeout(() => { btn.textContent = orig; }, 2000);
+    const debug = document.getElementById('audio-debug');
+    try {
+      const ctx = ensureAudio();
+      debug.style.display = 'block';
+      debug.textContent = `AudioContext: ${ctx.state} | sampleRate: ${ctx.sampleRate} | 浏览器: ${navigator.userAgent.slice(0,60)}`;
+      playSound('coin');
+      const btn = document.getElementById('test-sound-btn');
+      btn.textContent = '🔊 听到了吗？';
+      setTimeout(() => {
+        btn.textContent = '🔊 测试音效';
+        debug.style.display = 'none';
+      }, 4000);
+    } catch (e) {
+      debug.style.display = 'block';
+      debug.textContent = `❌ 错误: ${e.message}`;
+    }
   });
 
   // ===== 难度按钮 =====
