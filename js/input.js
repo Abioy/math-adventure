@@ -2,6 +2,15 @@
 // 所有输入事件统一在此管理
 
 function setupInput() {
+  // ===== 测试音效按钮 =====
+  document.getElementById('test-sound-btn').addEventListener('click', () => {
+    playSound('coin');
+    const btn = document.getElementById('test-sound-btn');
+    const orig = btn.textContent;
+    btn.textContent = '🔊 听到了吗？';
+    setTimeout(() => { btn.textContent = orig; }, 2000);
+  });
+
   // ===== 难度按钮 =====
   document.querySelectorAll('.diff-btn').forEach(btn => {
     btn.addEventListener('click', () => {
