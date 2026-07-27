@@ -28,11 +28,6 @@ function animate() {
   renderer.render(scene, camera);
 }
 
-// 移动端音频：首次用户交互时创建并唤醒 AudioContext
-// iOS Safari 要求必须在用户手势回调中创建 AudioContext
-document.addEventListener('touchstart', () => ensureAudio(), { passive: true });
-document.addEventListener('click', () => ensureAudio());
-
 document.addEventListener('DOMContentLoaded', () => {
   initScene();
   renderer.setClearColor(0x5c94fc); // 确保清除色正确

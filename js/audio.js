@@ -1,44 +1,19 @@
-// 音效系统 — Web Audio API + HTML5 Audio 保底
-const AudioCtx = window.AudioContext || window.webkitAudioContext;
-let audioCtx;
-let audioFallback = null;
+// 音效系统 — HTML5 Audio（全平台兼容）
+const BEEP = 'data:audio/wav;base64,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';
 
-function ensureAudio() {
-  if (!audioCtx) audioCtx = new AudioCtx();
-  if (audioCtx.state === 'suspended') audioCtx.resume();
-  return audioCtx;
-}
+const RATE = { jump: 1.5, coin: 2, correct: 1, wrong: 0.5, bump: 0.7, powerup: 1.3, die: 0.6 };
+const _pool = {};
 
-function initAudio() { ensureAudio(); }
+function initAudio() {} // 兼容旧调用
 
-// 播放音效 — 先 WebAudio，如果 context 未就绪则用 HTML5 Audio
 function playSound(type) {
+  const rate = RATE[type] || 1;
+  let a = _pool[type];
+  if (!a) { a = new Audio(BEEP); _pool[type] = a; }
   try {
-    const ctx = ensureAudio();
-    // 如果 context 还在 suspended，用 fallback 保底
-    if (ctx.state === 'suspended') { playFallback(type); return; }
-    const osc = ctx.createOscillator();
-    const gain = ctx.createGain();
-    osc.connect(gain);
-    gain.connect(ctx.destination);
-    gain.gain.value = 0.15;
-    const now = ctx.currentTime;
-    if (type === 'jump') { osc.type='square'; osc.frequency.value=300; osc.frequency.exponentialRampToValueAtTime(600,now+0.15); gain.gain.exponentialRampToValueAtTime(0.001,now+0.2); osc.start(now); osc.stop(now+0.2); }
-    else if (type === 'coin') { osc.type='square'; osc.frequency.value=988; osc.frequency.setValueAtTime(1319,now+0.07); gain.gain.exponentialRampToValueAtTime(0.001,now+0.3); osc.start(now); osc.stop(now+0.3); }
-    else if (type === 'correct') { osc.type='sine'; osc.frequency.setValueAtTime(523,now); osc.frequency.setValueAtTime(659,now+0.1); osc.frequency.setValueAtTime(784,now+0.2); gain.gain.exponentialRampToValueAtTime(0.001,now+0.4); osc.start(now); osc.stop(now+0.4); }
-    else if (type === 'wrong') { osc.type='sawtooth'; osc.frequency.value=200; gain.gain.value=0.1; gain.gain.exponentialRampToValueAtTime(0.001,now+0.3); osc.start(now); osc.stop(now+0.3); }
-    else if (type === 'bump') { osc.type='triangle'; osc.frequency.value=150; gain.gain.exponentialRampToValueAtTime(0.001,now+0.1); osc.start(now); osc.stop(now+0.1); }
-    else if (type === 'powerup') { osc.type='sine'; [523,587,659,698,784,880,988,1047].forEach((f,i)=>osc.frequency.setValueAtTime(f,now+i*0.06)); gain.gain.exponentialRampToValueAtTime(0.001,now+0.6); osc.start(now); osc.stop(now+0.6); }
-    else if (type === 'die') { osc.type='triangle'; osc.frequency.value=400; osc.frequency.exponentialRampToValueAtTime(100,now+0.5); gain.gain.exponentialRampToValueAtTime(0.001,now+0.6); osc.start(now); osc.stop(now+0.6); }
-  } catch(e) {
-    playFallback(type);
-  }
-}
-
-// HTML5 Audio fallback
-const FALLBACK_WAV = 'data:audio/wav;base64,UklGRkQDAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YSADAACAq9Ht/f3v1K6EWDEUAwEOKE13o8rp+/7z2raLYDgYBQAKI0Zwm8Tk+f/2372TaD8dCAAIHT9ok73f9v/55MSbcEYjCgAFGDhgi7ba8/776cqjd00oDgEDFDFYhK7U7/397dGrf1QuEgICECtRe6fO6/z+8deyiFw1FgQBDCVJdJ/H5/r/9dy5j2Q7GwYACSBCbJfA4vf/9+LAl2xCIAkABhs7ZI+53PX/+ufHn3RJJQwBBBY1XIiy1/H+/OvOp3tRKxACAhIuVICr0e39/e/UroRYMRQDAQ4oTXejyun7/vPatotgOBgFAAojRnCbxOT5//bfvZNoPx0IAAgdP2iTvd/2//nkxJtwRiMKAAUYOGCLttrz/vvpyqN3TSgOAQMUMViErtTv/f3t0auAVC4SAgIQK1F7p87r/P7x17KIXDUWBAEMJUl0n8fn+v/13LmPZDsbBgAJIEJsl8Di9//34sCXbEIgCQAGGztkj7nc9f/658efdEklDAEEFjVciLLX8f78686ne1ErEAICEi5UgKvR7f3979SuhFgxFAMBDihNd6PK6fv+89q2i2A4GAUACiNGcJvE5Pn/9t+9k2g/HQgACB0/aJO93/b/+eTEm3BGIwoABRg4YIu22vP+++nKo3dNKA4BAxQxWISu1O/9/e3Rq39ULhICAhArUXunzuv8/vHXsohcNRYEAQwlSXSfx+f6//XcuY9kOxsGAAkgQmyXwOL3//fiwJdsQiAJAAYbO2SPudz1//rnx590SSUMAQQWNVyIstfx/vzrzqd7USsQAgISLlR/q9Ht/f3v1K6EWDEUAwEOKE13o8rp+/7z2raLYDgYBQAKI0Zwm8Tk+f/2372TaD8dCAAIHT9ok73f9v/55MSbcEYjCgAFGDhgi7ba8/776cqjd00oDgEDFDFYhK7U7/397dGrgFQuEgICECtRe6fO6/z+8deyiFw1FgQBDCVJdJ/H5/r/9dy5j2Q7GwYACSBCbJfA4vf/9+LAl2xCIAkABhs7ZI+53PX/+ufHn3RJJQwBBBY1XIiy1/H+/OvOp3tRKxACAhIuVA==';
-
-function playFallback(type) {
-  if (!audioFallback) audioFallback = new Audio(FALLBACK_WAV);
-  try { audioFallback.pause(); audioFallback.currentTime = 0; audioFallback.play(); } catch(e) {}
+    a.pause();
+    a.currentTime = 0;
+    a.playbackRate = rate;
+    a.play();
+  } catch(e) {}
 }
