@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>🍄 数学大冒险 - 二年级</title>
+<link rel="stylesheet" href="css/style.css?v=8">
+</head>
+<body>
+
+<!-- HUD -->
+<div id="hud">
+  <div class="hud-item">🍄 分数: <span id="score">0</span></div>
+  <div class="hud-item">⭐ <span id="stars">0</span></div>
+  <div class="hud-item">❤️ <span id="lives">5</span></div>
+  <div class="hud-item">🏁 <span id="level">1</span></div>
+</div>
+
+<!-- 调试显示 (F3开关) -->
+<div id="debug-display" style="position:fixed;top:40px;left:10px;background:rgba(0,0,0,0.9);color:#0f0;padding:8px 12px;font:13px monospace;z-index:9999;border-radius:6px;display:none;line-height:1.6;"></div>
+
+<!-- 答题弹窗 -->
+<div id="math-popup">
+  <div class="problem" id="popup-problem">5 + 3 = ?</div>
+  <div id="popup-input-area"></div>
+  <div class="answer-input" id="popup-answer">&nbsp;</div>
+  <div id="numpad-popup">
+    <button class="np-btn" data-n="1">1</button>
+    <button class="np-btn" data-n="2">2</button>
+    <button class="np-btn" data-n="3">3</button>
+    <button class="np-btn" data-n="4">4</button>
+    <button class="np-btn" data-n="5">5</button>
+    <button class="np-btn" data-n="6">6</button>
+    <button class="np-btn" data-n="7">7</button>
+    <button class="np-btn" data-n="8">8</button>
+    <button class="np-btn" data-n="9">9</button>
+    <button class="np-btn" data-n="0">0</button>
+    <button class="np-btn ok" id="np-ok">✓</button>
+    <button class="np-btn und" id="np-und">⌫</button>
+    <button class="np-btn cls" id="np-cls">✗</button>
+  </div>
+</div>
+
+<!-- 触摸控制 -->
+<div id="touch-controls">
+  <div class="dpad">
+    <div class="dpad-btn empty"></div>
+    <div class="dpad-btn" id="btn-up">▲</div>
+    <div class="dpad-btn empty"></div>
+    <div class="dpad-btn" id="btn-left">◀</div>
+    <div class="dpad-btn" id="btn-down">▼</div>
+    <div class="dpad-btn" id="btn-right">▶</div>
+  </div>
+  <div class="action-btns">
+    <div class="action-btn" id="pause-btn">⏸</div>
+    <div class="action-btn" id="jump-btn">跳</div>
+  </div>
+</div>
+
+<!-- 开始界面 -->
+<div class="overlay" id="start-screen">
+  <h1>🍄 数学大冒险</h1>
+  <h2>二年级数学大冒险</h2>
+  <p>🏃 跑动跳跃，顶住问号砖块解题</p>
+  <p>✅ 答对得星星，答错不扣命可重试</p>
+  <p>🏁 到达旗杆过关！收集所有星星</p>
+  <div class="mode-select">
+    <button class="mode-btn" id="mode-practice">📝 练习模式</button>
+    <button class="mode-btn" id="mode-exam">🗺️ 冒险模式</button>
+  </div>
+</div>
+
+<!-- 练习模式：选择难度 -->
+<div class="overlay hidden" id="practice-screen">
+  <h1>📝 练习模式</h1>
+  <h2>选择难度</h2>
+  <p>🔢 系统自动生成题目，无限关卡</p>
+  <div class="diff-select">
+    <button class="diff-btn active" data-diff="easy">🌱 简单<br><small>20 以内加减</small></button>
+    <button class="diff-btn" data-diff="medium">🌿 中等<br><small>50 以内加减+乘法</small></button>
+    <button class="diff-btn" data-diff="hard">🌳 困难<br><small>99 以内加减+乘法</small></button>
+  </div>
+  <button class="btn-primary" id="start-practice-btn">🎮 开始练习</button>
+  <button class="btn-secondary" id="back-to-start">← 返回</button>
+</div>
+
+<!-- 冒险模式：选择关卡 -->
+<div class="overlay hidden" id="exam-screen">
+  <h1>🗺️ 冒险模式</h1>
+  <h2>选择冒险地图</h2>
+  <p>🏰 完成一个地区的冒险即过一关</p>
+  <div class="exam-list" id="exam-list"></div>
+  <button class="btn-secondary" id="back-to-start-exam">← 返回</button>
+</div>
+
+<!-- 暂停 -->
+<div id="pause-overlay" class="hidden">
+  <h2>⏸ 暂停</h2>
+  <button class="btn-primary" id="resume-btn">▶ 继续</button>
+</div>
+
+<!-- 结束界面 -->
+<div class="overlay hidden" id="end-screen">
+  <h1 id="end-title">🎉 过关！</h1>
+  <div class="stat-row">
+    <div class="stat-box"><div class="lb">分数</div><div class="vl" id="end-score">0</div></div>
+    <div class="stat-box"><div class="lb">星星</div><div class="vl" id="end-stars">0</div></div>
+    <div class="stat-box"><div class="lb">正确率</div><div class="vl" id="end-acc">0%</div></div>
+  </div>
+  <button class="btn-primary" id="next-btn">➡ 下一关</button>
+  <button class="btn-primary" id="restart-btn" style="margin-top:8px;background:linear-gradient(145deg,#42a5f5,#1e88e5);">🔄 重新开始</button>
+</div>
+
+<!-- Three.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+<!-- 游戏模块 (注意加载顺序) -->
+<script src="js/audio.js?v=5"></script>
+<script src="js/config.js?v=7"></script>
+<script src="js/scene.js?v=7"></script>
+<script src="js/level.js?v=7"></script>
+<script src="js/physics.js?v=7"></script>
+<script src="js/game.js?v=8"></script>
+<script src="js/ui.js?v=10"></script>
+<script src="js/input.js?v=6"></script>
+<script src="js/main.js?v=8"></script>
+
+</body>
+</html>

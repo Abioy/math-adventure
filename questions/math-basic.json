@@ -1,0 +1,9 @@
+{
+  "name": "数学基础",
+  "mode": "generator",
+  "generators": [
+    {"type": "calc", "weight": 3, "config": {"ops": ["add", "sub"], "min": 1, "max": 20}},
+    {"type": "choice", "weight": 1, "config": {"ops": ["add", "sub"], "min": 1, "max": 20, "options": 4}},
+    {"type": "bool", "weight": 1, "config": {"ops": ["add", "sub"], "min": 1, "max": 20, "wrongRate": 0.5}}
+  ]
+}
