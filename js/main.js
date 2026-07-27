@@ -30,14 +30,8 @@ function animate() {
 
 // 移动端音频：首次用户交互时创建并唤醒 AudioContext
 // iOS Safari 要求必须在用户手势回调中创建 AudioContext
-let audioInitialized = false;
-function wakeAudio() {
-  if (audioInitialized) return;
-  audioInitialized = true;
-  initAudio();
-}
-document.addEventListener('touchstart', wakeAudio, { passive: true });
-document.addEventListener('click', wakeAudio);
+document.addEventListener('touchstart', () => ensureAudio(), { passive: true });
+document.addEventListener('click', () => ensureAudio());
 
 document.addEventListener('DOMContentLoaded', () => {
   initScene();

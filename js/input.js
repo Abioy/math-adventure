@@ -3,13 +3,13 @@
 
 function setupInput() {
   // ===== 测试音效按钮 =====
-  document.getElementById('test-sound-btn').addEventListener('click', () => {
+  document.getElementById('test-sound-btn').addEventListener('click', async () => {
     const debug = document.getElementById('audio-debug');
     try {
-      const ctx = ensureAudio();
+      const ctx = await ensureAudio();
       debug.style.display = 'block';
       debug.textContent = `AudioContext: ${ctx.state} | sampleRate: ${ctx.sampleRate} | 浏览器: ${navigator.userAgent.slice(0,60)}`;
-      playSound('coin');
+      await playSound('coin');
       const btn = document.getElementById('test-sound-btn');
       btn.textContent = '🔊 听到了吗？';
       setTimeout(() => {

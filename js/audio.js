@@ -2,20 +2,20 @@
 const AudioCtx = window.AudioContext || window.webkitAudioContext;
 let audioCtx;
 
-function ensureAudio() {
+async function ensureAudio() {
   if (!audioCtx) {
     audioCtx = new AudioCtx();
   }
   if (audioCtx.state === 'suspended') {
-    audioCtx.resume();
+    await audioCtx.resume();
   }
   return audioCtx;
 }
 
 function initAudio() { ensureAudio(); }
 
-function playSound(type) {
-  const ctx = ensureAudio();
+async function playSound(type) {
+  const ctx = await ensureAudio();
   const osc = ctx.createOscillator();
   const gain = ctx.createGain();
   osc.connect(gain);
