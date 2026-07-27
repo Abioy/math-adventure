@@ -7,8 +7,8 @@ const EXAM_PAPERS = [
   { file: 'questions/qingdao-laixi-grade2-final.js', name: '青岛莱西', desc: '42 个挑战' },
 ];
 
-function startGame() {
-  initAudio();
+async function startGame() {
+  await initAudio(); // 等 resume() 完成再开始游戏
   hideScreen('start-screen'); hideScreen('practice-screen'); hideScreen('exam-screen'); hideScreen('end-screen');
   closeMathPopup(); // 确保弹窗关闭
   G.score = 0; G.stars = 0; G.lives = 5; G.level = 1;

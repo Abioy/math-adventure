@@ -1,19 +1,62 @@
-// 音效系统 — HTML5 Audio（全平台兼容）
-const BEEP = 'data:audio/wav;base64,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';
+// 音效系统 — Web Audio API（await resume() 确保移动端可用）
+const AudioCtx = window.AudioContext || window.webkitAudioContext;
+let audioCtx;
 
-const RATE = { jump: 1.5, coin: 2, correct: 1, wrong: 0.5, bump: 0.7, powerup: 1.3, die: 0.6 };
-const _pool = {};
-
-function initAudio() {} // 兼容旧调用
+function initAudio() {
+  if (!audioCtx) {
+    audioCtx = new AudioCtx();
+  }
+  // 关键：await resume() 确保 context 真正 running 后才返回
+  if (audioCtx.state === 'suspended') {
+    return audioCtx.resume();
+  }
+  return Promise.resolve();
+}
 
 function playSound(type) {
-  const rate = RATE[type] || 1;
-  let a = _pool[type];
-  if (!a) { a = new Audio(BEEP); _pool[type] = a; }
-  try {
-    a.pause();
-    a.currentTime = 0;
-    a.playbackRate = rate;
-    a.play();
-  } catch(e) {}
+  if (!audioCtx) return;
+  const osc = audioCtx.createOscillator();
+  const gain = audioCtx.createGain();
+  osc.connect(gain);
+  gain.connect(audioCtx.destination);
+  gain.gain.value = 0.12;
+  const now = audioCtx.currentTime;
+  if (type === 'jump') {
+    osc.type = 'square'; osc.frequency.value = 300;
+    osc.frequency.exponentialRampToValueAtTime(600, now + 0.15);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.2);
+    osc.start(now); osc.stop(now + 0.2);
+  } else if (type === 'coin') {
+    osc.type = 'square'; osc.frequency.value = 988;
+    osc.frequency.setValueAtTime(1319, now + 0.07);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.3);
+    osc.start(now); osc.stop(now + 0.3);
+  } else if (type === 'correct') {
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(523, now);
+    osc.frequency.setValueAtTime(659, now + 0.1);
+    osc.frequency.setValueAtTime(784, now + 0.2);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.4);
+    osc.start(now); osc.stop(now + 0.4);
+  } else if (type === 'wrong') {
+    osc.type = 'sawtooth'; osc.frequency.value = 200;
+    gain.gain.value = 0.08;
+    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.3);
+    osc.start(now); osc.stop(now + 0.3);
+  } else if (type === 'bump') {
+    osc.type = 'triangle'; osc.frequency.value = 150;
+    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.1);
+    osc.start(now); osc.stop(now + 0.1);
+  } else if (type === 'powerup') {
+    osc.type = 'sine';
+    [523, 587, 659, 698, 784, 880, 988, 1047].forEach((f, i) =>
+      osc.frequency.setValueAtTime(f, now + i * 0.06));
+    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.6);
+    osc.start(now); osc.stop(now + 0.6);
+  } else if (type === 'die') {
+    osc.type = 'triangle'; osc.frequency.value = 400;
+    osc.frequency.exponentialRampToValueAtTime(100, now + 0.5);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.6);
+    osc.start(now); osc.stop(now + 0.6);
+  }
 }
