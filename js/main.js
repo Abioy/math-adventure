@@ -28,6 +28,11 @@ function animate() {
   renderer.render(scene, camera);
 }
 
+// 移动端音频：首次交互时唤醒 AudioContext
+['touchstart', 'click'].forEach(evt => {
+  document.addEventListener(evt, initAudio, { once: true });
+});
+
 document.addEventListener('DOMContentLoaded', () => {
   initScene();
   renderer.setClearColor(0x5c94fc); // 确保清除色正确

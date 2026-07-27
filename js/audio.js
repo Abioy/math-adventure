@@ -2,7 +2,11 @@
 const AudioCtx = window.AudioContext || window.webkitAudioContext;
 let audioCtx;
 
-function initAudio() { if (!audioCtx) audioCtx = new AudioCtx(); }
+function initAudio() {
+  if (!audioCtx) audioCtx = new AudioCtx();
+  // 移动端浏览器需要用户交互后才能播放音频
+  if (audioCtx.state === 'suspended') audioCtx.resume();
+}
 
 function playSound(type) {
   if (!audioCtx) return;

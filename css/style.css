@@ -93,7 +93,8 @@ canvas { display: block; }
 #pause-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 90; }
 #pause-overlay.hidden { display: none; }
 #pause-overlay h2 { color: #fff; font-size: 36px; margin-bottom: 20px; }
-@media (min-width: 768px) { #touch-controls { display: none; } }
+/* 非触屏设备隐藏触摸按钮（桌面端） */
+@media (hover: hover) and (pointer: fine) { #touch-controls { display: none; } }
 
 /* 小屏幕自适应：内容过高时缩小 */
 @media (max-height: 550px) {
