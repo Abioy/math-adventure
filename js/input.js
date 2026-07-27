@@ -3,19 +3,31 @@
 
 function setupInput() {
   // ===== 测试音效按钮 =====
-  document.getElementById('test-sound-btn').addEventListener('click', async () => {
+  document.getElementById('test-sound-btn').addEventListener('click', () => {
     const debug = document.getElementById('audio-debug');
     try {
-      const ctx = await ensureAudio();
+      const ctx = ensureAudio();
       debug.style.display = 'block';
-      debug.textContent = `AudioContext: ${ctx.state} | sampleRate: ${ctx.sampleRate} | 浏览器: ${navigator.userAgent.slice(0,60)}`;
-      await playSound('coin');
+
+      // 测试 1: Web Audio
+      playSound('coin');
+
+      // 测试 2: HTML5 Audio (直接播放)
+      let html5Ok = false;
+      try {
+        const a = new Audio('data:audio/wav;base64,UklGRkQDAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YSADAACAq9Ht/f3v1K6EWDEUAwEOKE13o8rp+/7z2raLYDgYBQAKI0Zwm8Tk+f/2372TaD8dCAAIHT9ok73f9v/55MSbcEYjCgAFGDhgi7ba8/776cqjd00oDgEDFDFYhK7U7/397dGrf1QuEgICECtRe6fO6/z+8deyiFw1FgQBDCVJdJ/H5/r/9dy5j2Q7GwYACSBCbJfA4vf/9+LAl2xCIAkABhs7ZI+53PX/+ufHn3RJJQwBBBY1XIiy1/H+/OvOp3tRKxACAhIuVICr0e39/e/UroRYMRQDAQ4oTXejyun7/vPatotgOBgFAAojRnCbxOT5//bfvZNoPx0IAAgdP2iTvd/2//nkxJtwRiMKAAUYOGCLttrz/vvpyqN3TSgOAQMUMViErtTv/f3t0auAVC4SAgIQK1F7p87r/P7x17KIXDUWBAEMJUl0n8fn+v/13LmPZDsbBgAJIEJsl8Di9//34sCXbEIgCQAGGztkj7nc9f/658efdEklDAEEFjVciLLX8f78686ne1ErEAICEi5UgKvR7f3979SuhFgxFAMBDihNd6PK6fv+89q2i2A4GAUACiNGcJvE5Pn/9t+9k2g/HQgACB0/aJO93/b/+eTEm3BGIwoABRg4YIu22vP+++nKo3dNKA4BAxQxWISu1O/9/e3Rq39ULhICAhArUXunzuv8/vHXsohcNRYEAQwlSXSfx+f6//XcuY9kOxsGAAkgQmyXwOL3//fiwJdsQiAJAAYbO2SPudz1//rnx590SSUMAQQWNVyIstfx/vzrzqd7USsQAgISLlR/q9Ht/f3v1K6EWDEUAwEOKE13o8rp+/7z2raLYDgYBQAKI0Zwm8Tk+f/2372TaD8dCAAIHT9ok73f9v/55MSbcEYjCgAFGDhgi7ba8/776cqjd00oDgEDFDFYhK7U7/397dGrgFQuEgICECtRe6fO6/z+8deyiFw1FgQBDCVJdJ/H5/r/9dy5j2Q7GwYACSBCbJfA4vf/9+LAl2xCIAkABhs7ZI+53PX/+ufHn3RJJQwBBBY1XIiy1/H+/OvOp3tRKxACAhIuVA==');
+        a.pause(); a.currentTime = 0; a.play();
+        html5Ok = true;
+      } catch(e) { html5Ok = false; }
+
+      debug.textContent = `WebAudio:${ctx.state} | HTML5Audio:${html5Ok?'OK':'FAIL'} | ${navigator.userAgent.slice(0,50)}`;
+
       const btn = document.getElementById('test-sound-btn');
-      btn.textContent = '🔊 听到了吗？';
+      btn.textContent = '🔊 听到了吗？(WebAudio+HTML5各一次)';
       setTimeout(() => {
         btn.textContent = '🔊 测试音效';
         debug.style.display = 'none';
-      }, 4000);
+      }, 5000);
     } catch (e) {
       debug.style.display = 'block';
       debug.textContent = `❌ 错误: ${e.message}`;
